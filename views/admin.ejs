@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+
+<h1>Administração de Leilões</h1>
+
+<form action="/admin/new" method="POST">
+    <input type="text" name="title" placeholder="Título do leilão" required>
+    <input type="text" name="description" placeholder="Descrição" required>
+    <input type="text" name="imageUrl" placeholder="URL da imagem" required>
+    <input type="number" name="initialBid" placeholder="Lance Inicial" required>
+    <input type="number" name="minBidIncrement" placeholder="Incremento Mínimo de Lance" required>
+    <button type="submit">Criar Leilão</button>
+</form>
+
+<% auctions.forEach(auction => { %>
+    <div>
+        <h2><%= auction.title %></h2>
+        <img src="<%= auction.imageUrl %>" alt="<%= auction.title %>">
+        <p><%= auction.description %></p>
+        <p>Lance Inicial: <%= auction.initialBid %></p>
+        <p>Maior Lance: <%= auction.bids[auction.bids.length - 1]?.amount || 'Nenhum lance ainda' %></p>
+
+        <form action="/admin/edit/<%= auction._id %>?_method=PUT" method="POST">
+            <input type="text" name="title" value="<%= auction.title %>" required>
+            <input type="text" name="description" value="<%= auction.description %>" required>
+            <input type="text" name="imageUrl" value="<%= auction.imageUrl %>" required>
+            <input type="number" name="initialBid" value="<%= auction.initialBid %>" required>
+            <input type="number" name="minBidIncrement" value="<%= auction.minBidIncrement %>" required>
+            <button type="submit">Salvar Alterações</button>
+        </form>
+
+        <form action="/admin/delete/<%= auction._id %>?_method=DELETE" method="POST">
+            <button type="submit">Excluir Leilão</button>
+        </form>
+
+        <h3>Lances</h3>
+        <ul>
+            <% auction.bids.forEach(bid => { %>
+                <li>
+                    <%= bid.user %>: <%= bid.amount %>
+                    <form action="/admin/remove-bid/<%= auction._id %>/<%= bid._id %>?_method=DELETE" method="POST">
+                        <button type="submit">Remover</button>
+                    </form>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+<% }) %>
+
+<%- include('partials/footer') %>

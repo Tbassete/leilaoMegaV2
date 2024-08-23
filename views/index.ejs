@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<h1>Leilões</h1>
+<% auctions.forEach(auction => { %>
+    <div>
+        <h2><%= auction.title %></h2>
+        <img src="<%= auction.imageUrl %>" alt="<%= auction.title %>">
+        <p><%= auction.description %></p>
+        <p>Lance Inicial: <%= auction.initialBid %></p>
+        <p>Maior Lance: <%= auction.bids[auction.bids.length - 1]?.amount || 'Nenhum lance ainda' %></p>
+        <form action="/bid/<%= auction._id %>" method="POST">
+            <input type="text" name="user" placeholder="Seu nome" required>
+            <input type="number" name="amount" placeholder="Seu lance" required>
+            <button type="submit">Dar Lance</button>
+        </form>
+    </div>
+<% }) %>
+
+<%- include('partials/footer') %>
